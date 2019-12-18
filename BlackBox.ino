@@ -55,17 +55,13 @@ int updateCounter() {
 //===============================================================
 
 void handleRoot() {
-  Serial.println("handling HTTP request for root");
-  String s = MAIN_page; //Read HTML contents
-  server.send(200, "text/html", s); //Send web page
+  Serial.println("WEBSERVER: handling HTTP request for root");
+  server.send(200, "text/html", String(MAIN_page)); //Send web page
 }
 
 void handleLifetimeRequest() {
-  int a = life_time_value;
-  String string_life_time_value = String(a);
-  Serial.print("sending data to web browser:");
-  Serial.println(string_life_time_value);
-  server.send(200, "text/plain", string_life_time_value); //Send ADC value only to client ajax request
+  Serial.print("WEBSERVER: handling HTTP request for lifetime data");
+  server.send(200, "text/plain", String(life_time_value)); //Send ADC value only to client ajax request
 }
 
 //===============================================================
