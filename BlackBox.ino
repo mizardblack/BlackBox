@@ -19,8 +19,6 @@ const char* password = "skateboard";
 Ticker life_time_writer;
 
 int counter;
-int diameter;
-int state;
 int previousState;
 
 int life_time_value;
@@ -30,15 +28,23 @@ int previous_lifetime_value;
 // sensor function
 //===============================================================
 
-int updateCounter() {
-  state = analogRead(A0);
+// "input" from globals: previousState
+// "output" to globals: previousState, counter
+void updateCounter() {
+  // read state from sensors
+  int state = analogRead(A0);
+  // if previousState was never initialized (first time), set to HIGH so
+  // that when we check for HIGH below, we dont potentially increment
+  // counter before one full wheel rotation.
+  if (previousState == 0) {
+    previousState = HIGH;
+  }
 
   // compare the buttonState to its previous state
   if (state != previousState) {
     if (state == HIGH) {
       // if the current state is HIGH then the button went from off to on:
       counter++;
-      //debug
       Serial.print("counter=");
       Serial.println(counter);
     } else {
@@ -47,7 +53,6 @@ int updateCounter() {
   }
   // save the current state as the last state, for next time through the loop
   previousState = state;
-  return counter;
 }
 
 //===============================================================
@@ -60,7 +65,7 @@ void handleRoot() {
 }
 
 void handleLifetimeRequest() {
-  Serial.print("WEBSERVER: handling HTTP request for lifetime data");
+  Serial.println("WEBSERVER: handling HTTP request for lifetime data");
   server.send(200, "text/plain", String(life_time_value)); //Send ADC value only to client ajax request
 }
 
@@ -69,7 +74,6 @@ void handleLifetimeRequest() {
 //===============================================================
 
 void updateWrite() {
-  counter = updateCounter();
   life_time_value = previous_lifetime_value + counter;
   writeValue(life_time_value, 0);
   Serial.print("Writing input: ");
@@ -95,11 +99,6 @@ void setup() {
   Serial.begin(115200);
   delay(1000);
   EEPROM.begin(4096);
-
-  // set initial state for global variables
-  counter = 0;
-  state = HIGH;
-  previousState = HIGH;
 
   // set ticker to write data every 60s
   life_time_writer.attach(60,  updateWrite);
