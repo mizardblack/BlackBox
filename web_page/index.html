@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>Skateboard Stepper Counter</title>
+    <link rel="stylesheet" type="text/css" href="reset.css">
+    <link rel="stylesheet" type="text/css" href="defaultstyles.css">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
+    <link rel="stylesheet" href="https://use.typekit.net/sts2yah.css">
+</head>
+
+<body>
+
+    <div class="header cards">
+        <div id="title">Black Box 2.0</div>
+        <img src="https://i.ibb.co/D151XcN/logo.png" alt="logo" id="logo_left">
+        <div id="sub_title">Tracker Data</div>
+        <!-- <div id="input_container">
+            <div id="diameter_container">
+                Diameter of your wheels:
+                <input type="text" id="input_diameter" class='field' value=""> cm
+            </div>
+            <div id="weight_container">
+                Your weight:
+                <input type="text" id="input_weight" class='field' value=""> kg
+            </div>
+            <button id="submit">Submit</button>
+        </div> -->
+    </div>
+
+    <div class="data_container">
+        <div class="left cards">
+            <div id="diagnose_container">
+                Diagnose Data
+                <img src="https://i.ibb.co/pwz5f1h/wheel.png" alt="wheel" id="wheel">
+                <div id="wheel_data">
+                    <p>Wheels Rotation:</br>
+                        <span id="ADCValue" class="numbers">0</span>
+                        times
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="middle cards">
+            <div id="main_data_container">
+                Main Data
+                <div id="total_dist_data">
+                    <img src="https://i.ibb.co/wrP22nX/whole.png" alt="whole" id="whole">
+                    <p id="total_distance">Total Distance:</p>
+                    <p id="total_distance_number">
+                        <span id="lifetime_dist" class="numbers">0</span>
+                        km
+                    </p>
+                </div>
+                <div id="line"></div>
+                <div id="sect_dist_data">
+                    <img src="https://i.ibb.co/RDxLXdW/section.png" alt="section" id="section">
+                    <p id="section_distance">Section Distance:</p>
+                    <p id="section_distance_number">
+                        <span class="numbers">0</span>
+                        km
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        setInterval(function () {
+            console.log("getting data");
+            // Call a function repetatively with 2 Second interval
+            getData();
+        }, 2000); //2000mSeconds update rate
+
+        function getData() {
+            var xhttp = new XMLHttpRequest();
+            var lifetime_rotation;
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    lifetime_rotation = this.responseText;
+                }
+            };
+            xhttp.open("GET", "readADC", true);
+            xhttp.send();
+        }
+        var lifetime_dist;
+        document.getElementById("lifetime_dist").innerHTML = lifetime_dist;
+        lifetime_dist_calculator();
+        function lifetime_dist_calculator() {
+            lifetime_dist = lifetime_rotation * d * 3.14 / 1000;
+        }
+
+    </script>
+</body>
+
+</html>
