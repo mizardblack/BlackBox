@@ -20,8 +20,6 @@ Ticker life_time_writer;
 
 int counter;
 int previousState;
-
-int life_time_value;
 int previous_lifetime_value;
 
 //===============================================================
@@ -55,6 +53,10 @@ void updateCounter() {
   previousState = state;
 }
 
+int lifetimeRotations() {
+  return previous_lifetime_value + counter;
+}
+
 //===============================================================
 // server functions
 //===============================================================
@@ -66,7 +68,7 @@ void handleRoot() {
 
 void handleLifetimeRequest() {
   Serial.println("WEBSERVER: handling HTTP request for lifetime data");
-  server.send(200, "text/plain", String(life_time_value)); //Send ADC value only to client ajax request
+  server.send(200, "text/plain", String(lifetimeRotations())); //Send ADC value only to client ajax request
 }
 
 //===============================================================
@@ -74,7 +76,7 @@ void handleLifetimeRequest() {
 //===============================================================
 
 void updateWrite() {
-  life_time_value = previous_lifetime_value + counter;
+  int life_time_value = lifetimeRotations();
   writeValue(life_time_value, 0);
   Serial.print("Writing input: ");
   Serial.println(life_time_value);
@@ -108,10 +110,6 @@ void setup() {
   Serial.println();
   Serial.print("Reading previous lifetime value from memory: ");
   Serial.println(previous_lifetime_value);
-
-  // copy current value of lifetime_counter at startup
-  // TODO: do we even need this?
-  life_time_value = previous_lifetime_value;
 
   // Start up a local WiFi access point
   WiFi.mode(WIFI_AP);
