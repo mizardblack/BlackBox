@@ -15,7 +15,7 @@ const char* ssid = "skateboard";
 const char* password = "skateboard";
 
 Ticker life_time_writer;
-int ticker = 0;
+//int ticker = 0;
 
 int counter;
 int diameter;
@@ -56,25 +56,20 @@ int updateCounter() {
 // server functions
 //===============================================================
 void handleRoot() {
-  //  Serial.println("handling HTTP request for root");
+  Serial.println("handling HTTP request for root");
   String s = MAIN_page; //Read HTML contents
   server.send(200, "text/html", s); //Send web page
 }
 void handleLifetimeRequest() {
   int a = life_time_value;
   String string_life_time_value = String(a);
+  Serial.print("sending data to web browser:");
+  Serial.println(string_life_time_value);
   server.send(200, "text/plain", string_life_time_value); //Send ADC value only to client ajax request
   Serial.print("sending data to web browser:");
   Serial.println(string_life_time_value);
 }
 
-void handleSectionRequest() {
-  int a = counter;
-  String string_section_value = String(a);
-  server.send(200, "text/plain", string_section_value); //Send ADC value only to client ajax request
-  Serial.print("sending data to web browser:");
-  Serial.println(string_section_value);
-}
 //===============================================================
 // Setup & main loop
 //===============================================================
@@ -110,7 +105,6 @@ void setup() {
 
   server.on("/", handleRoot);      //This is display page
   server.on("/readLifetime", handleLifetimeRequest);
-  server.on("/readSection", handleSectionRequest);
   server.begin();                  //Start server
   //  Serial.println("HTTP server started");
 }
@@ -133,16 +127,16 @@ void updateWrite() {
   writeValue(input, 0);
   Serial.print("Writing input: ");
   Serial.println(input);
-
-  ++ticker;
-  // when the ticker reaches a certain value, start write value onto eeprom memory
-  if (ticker == 20) {
-    life_time_writer.attach(0.1, updateWrite);
-  }
-  // when the ticker reaches yet another value, stop writing
-  else if (ticker == 22) {
-    life_time_writer.detach();
-  }
+//
+//  ++ticker;
+//  // when the ticker reaches a certain value, start write value onto eeprom memory
+//  if (ticker == 20) {
+//    life_time_writer.attach(0.1, updateWrite);
+//  }
+//  // when the ticker reaches yet another value, stop writing
+//  else if (ticker == 22) {
+//    life_time_writer.detach();
+//  }
 }
 
 void writeValue(int value, int pos) {
