@@ -9,7 +9,6 @@ const char MAIN_page[] PROGMEM = R"=====(
     <!-- <link rel="stylesheet" href="https://use.typekit.net/sts2yah.css"> -->
     <style>
     body{
-        /* background-image: url("img/longboard.jpg"); */
         background-position: center; 
         background-repeat: no-repeat; 
         background-size: cover; 
@@ -21,12 +20,10 @@ const char MAIN_page[] PROGMEM = R"=====(
         text-align: center;
         line-height: 60px;
         font-weight: 700;
-        /* letter-spacing: 1px; */
     }
     
     .cards{
         max-width: 80%;
-        /* background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0,0, 0.7)); */
         background-color: rgba(255, 255, 255, 0.151);
         border-radius: 20px;
         margin:auto;
@@ -46,7 +43,6 @@ const char MAIN_page[] PROGMEM = R"=====(
         Left:14%;
         width: 72%;
         height:26%;
-        /* background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0,0, 0.7)); */
     }
     
     #title{
@@ -83,16 +79,12 @@ const char MAIN_page[] PROGMEM = R"=====(
     }
     .left{
         display: flex;
-        /* width:24.5%;
-        height: 500px; */
         width:18%;
         height: 400px;
         margin-top:10%;
     }
     .middle{
         position: relative;
-        /* width:75%;
-        height: 500px; */
         width:68%;
         height: 400px;
         margin-top:10%;
@@ -114,7 +106,6 @@ const char MAIN_page[] PROGMEM = R"=====(
         margin-top:50%;
         height:40%;
         width:100%;
-        /* background-color: coral; */
         padding:28px;
         margin-left: -20%;
         padding-top:20%;
@@ -229,17 +220,6 @@ const char MAIN_page[] PROGMEM = R"=====(
         <div id="title">Black Box 2.0</div>
         <!-- <img src="https://i.ibb.co/D151XcN/logo.png" alt="logo" id="logo_left"> -->
         <div id="sub_title">Tracker Data</div>
-        <!-- <div id="input_container">
-            <div id="diameter_container">
-                Diameter of your wheels:
-                <input type="text" id="input_diameter" class='field' value=""> cm
-            </div>
-            <div id="weight_container">
-                Your weight:
-                <input type="text" id="input_weight" class='field' value=""> kg
-            </div>
-            <button id="submit">Submit</button>
-        </div> -->
     </div>
 
     <div class="data_container">
