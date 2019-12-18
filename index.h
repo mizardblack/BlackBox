@@ -265,7 +265,7 @@ const char MAIN_page[] PROGMEM = R"=====(
       function dist_calculator(rotations) {
           const wheel_size = 10; // in cm
           const pi = 3.14;
-          return rotations * wheel_size * pi / 1000;
+          return rotations * wheel_size * pi / 100000;
       }
 
       setInterval(function () {
