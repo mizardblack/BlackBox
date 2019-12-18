@@ -8,8 +8,8 @@
 #include "index.h"  //Web page header file
 
 #define DATA_OFFSET 10
-#define HIGH 1024
-#define LOW 8
+#define ANALOG_HIGH 1024
+#define ANALOG_LOW 8
 
 ESP8266WebServer server(80); //Server on port 80
 //Enter your SSID and PASSWORD
@@ -35,12 +35,12 @@ void updateCounter() {
   // that when we check for HIGH below, we dont potentially increment
   // counter before one full wheel rotation.
   if (previousWheelState == 0) {
-    previousWheelState = HIGH;
+    previousWheelState = ANALOG_HIGH;
   }
 
   // compare the buttonState to its previous state
   if (state != previousWheelState) {
-    if (state == HIGH) {
+    if (state == ANALOG_HIGH) {
       // if the current state is HIGH then the button went from off to on:
       counter++;
       Serial.print("counter=");
