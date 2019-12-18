@@ -24,6 +24,36 @@ int previousWheelState;
 int startupRotations;
 
 //===============================================================
+// utility functions
+//===============================================================
+
+int lifetimeRotations() {
+  return startupRotations + counter;
+}
+
+//===============================================================
+// eeprom functions
+//===============================================================
+
+// Writes an integer value to EEPROM at position 'pos'
+void writeValue(int value, int pos) {
+  EEPROM.write(DATA_OFFSET + pos, value); //EEPROM.write(adress, value);
+  EEPROM.commit();
+}
+
+// Returns memory value from EEPROM beginning at position 'pos'
+int readValue(int pos) {
+  return EEPROM.read(DATA_OFFSET + pos);
+}
+
+void updateWrite() {
+  int life_time_value = lifetimeRotations();
+  writeValue(life_time_value, 0);
+  Serial.print("Writing input: ");
+  Serial.println(life_time_value);
+}
+
+//===============================================================
 // sensor function
 //===============================================================
 
@@ -54,10 +84,6 @@ void updateCounter() {
   previousWheelState = state;
 }
 
-int lifetimeRotations() {
-  return startupRotations + counter;
-}
-
 //===============================================================
 // server functions
 //===============================================================
@@ -70,28 +96,6 @@ void handleRoot() {
 void handleLifetimeRequest() {
   Serial.println("WEBSERVER: handling HTTP request for lifetime data");
   server.send(200, "text/plain", String(lifetimeRotations())); //Send ADC value only to client ajax request
-}
-
-//===============================================================
-// eeprom functions
-//===============================================================
-
-void updateWrite() {
-  int life_time_value = lifetimeRotations();
-  writeValue(life_time_value, 0);
-  Serial.print("Writing input: ");
-  Serial.println(life_time_value);
-}
-
-// Writes an integer value to EEPROM at position 'pos'
-void writeValue(int value, int pos) {
-  EEPROM.write(DATA_OFFSET + pos, value); //EEPROM.write(adress, value);
-  EEPROM.commit();
-}
-
-// Returns memory value from EEPROM beginning at position 'pos'
-int readValue(int pos) {
-  return EEPROM.read(DATA_OFFSET + pos);
 }
 
 //===============================================================
