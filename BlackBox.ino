@@ -69,6 +69,32 @@ void handleLifetimeRequest() {
 }
 
 //===============================================================
+// eeprom functions
+//===============================================================
+
+void updateWrite() {
+  counter = updateCounter();
+  life_time_value = previous_lifetime_value + counter;
+  int input = life_time_value;
+  writeValue(input, 0);
+  Serial.print("Writing input: ");
+  Serial.println(input);
+}
+
+void writeValue(int value, int pos) {
+  int s = value;
+  EEPROM.write( pos + DATA_OFFSET, s); //EEPROM.write(adress, value);
+  EEPROM.commit();
+  Serial.println();
+}
+
+// Set 'pos' parameter to specify begin position of the string in memory
+int readValue(int pos) {
+  int output = EEPROM.read(pos + DATA_OFFSET);
+  return output;
+}
+
+//===============================================================
 // Setup & main loop
 //===============================================================
 
@@ -110,31 +136,4 @@ void loop() {
   server.handleClient();
   updateCounter();
   delay(100);
-}
-
-
-//===============================================================
-// eeprom functions
-//===============================================================
-
-void updateWrite() {
-  counter = updateCounter();
-  life_time_value = previous_lifetime_value + counter;
-  int input = life_time_value;
-  writeValue(input, 0);
-  Serial.print("Writing input: ");
-  Serial.println(input);
-}
-
-void writeValue(int value, int pos) {
-  int s = value;
-  EEPROM.write( pos + DATA_OFFSET, s); //EEPROM.write(adress, value);
-  EEPROM.commit();
-  Serial.println();
-}
-
-// Set 'pos' parameter to specify begin position of the string in memory
-int readValue(int pos) {
-  int output = EEPROM.read(pos + DATA_OFFSET);
-  return output;
 }
