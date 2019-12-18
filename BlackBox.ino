@@ -30,7 +30,6 @@ int previous_lifetime_value;
 
 int updateCounter() {
   state = analogRead(A0);
-  //   Serial.println(state);
 
   // compare the buttonState to its previous state
   if (state != previousState) {
@@ -105,7 +104,6 @@ void setup() {
   server.on("/", handleRoot);      //This is display page
   server.on("/readLifetime", handleLifetimeRequest);
   server.begin();                  //Start server
-  //  Serial.println("HTTP server started");
 }
 
 void loop() {
@@ -126,13 +124,11 @@ void updateWrite() {
   writeValue(input, 0);
   Serial.print("Writing input: ");
   Serial.println(input);
-
 }
 
 void writeValue(int value, int pos) {
   int s = value;
   EEPROM.write( pos + DATA_OFFSET, s); //EEPROM.write(adress, value);
-  //  EEPROM.write( pos + DATA_OFFSET + 1, s, '\0' )
   EEPROM.commit();
   Serial.println();
 }
