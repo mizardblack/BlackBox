@@ -15,7 +15,6 @@ const char* ssid = "skateboard";
 const char* password = "skateboard";
 
 Ticker life_time_writer;
-//int ticker = 0;
 
 int counter;
 int diameter;
@@ -127,16 +126,7 @@ void updateWrite() {
   writeValue(input, 0);
   Serial.print("Writing input: ");
   Serial.println(input);
-//
-//  ++ticker;
-//  // when the ticker reaches a certain value, start write value onto eeprom memory
-//  if (ticker == 20) {
-//    life_time_writer.attach(0.1, updateWrite);
-//  }
-//  // when the ticker reaches yet another value, stop writing
-//  else if (ticker == 22) {
-//    life_time_writer.detach();
-//  }
+
 }
 
 void writeValue(int value, int pos) {
