@@ -1,13 +1,15 @@
-
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
-#include "index.h"  //Web page header file
-
 #include <EEPROM.h>
 #include <Ticker.h>
-#define DATA_OFFSET     10
+
+#include "index.h"  //Web page header file
+
+#define DATA_OFFSET 10
+#define HIGH 1024
+#define LOW 8
 
 ESP8266WebServer server(80); //Server on port 80
 //Enter your SSID and PASSWORD
@@ -33,16 +35,14 @@ int updateCounter() {
 
   // compare the buttonState to its previous state
   if (state != previousState) {
-    if (state == 1024) {
+    if (state == HIGH) {
       // if the current state is HIGH then the button went from off to on:
-      counter ++;
+      counter++;
       //debug
-      Serial.println("on");
-      Serial.print("counter= ");
+      Serial.print("counter=");
       Serial.println(counter);
     } else {
       // if the current state is LOW then the button went from on to off:
-      //      Serial.println("off");
     }
   }
   // save the current state as the last state, for next time through the loop
@@ -53,19 +53,19 @@ int updateCounter() {
 //===============================================================
 // server functions
 //===============================================================
+
 void handleRoot() {
   Serial.println("handling HTTP request for root");
   String s = MAIN_page; //Read HTML contents
   server.send(200, "text/html", s); //Send web page
 }
+
 void handleLifetimeRequest() {
   int a = life_time_value;
   String string_life_time_value = String(a);
   Serial.print("sending data to web browser:");
   Serial.println(string_life_time_value);
   server.send(200, "text/plain", string_life_time_value); //Send ADC value only to client ajax request
-  Serial.print("sending data to web browser:");
-  Serial.println(string_life_time_value);
 }
 
 //===============================================================
@@ -75,23 +75,20 @@ void handleLifetimeRequest() {
 void updateWrite() {
   counter = updateCounter();
   life_time_value = previous_lifetime_value + counter;
-  int input = life_time_value;
-  writeValue(input, 0);
+  writeValue(life_time_value, 0);
   Serial.print("Writing input: ");
-  Serial.println(input);
+  Serial.println(life_time_value);
 }
 
+// Writes an integer value to EEPROM at position 'pos'
 void writeValue(int value, int pos) {
-  int s = value;
-  EEPROM.write( pos + DATA_OFFSET, s); //EEPROM.write(adress, value);
+  EEPROM.write(DATA_OFFSET + pos, value); //EEPROM.write(adress, value);
   EEPROM.commit();
-  Serial.println();
 }
 
-// Set 'pos' parameter to specify begin position of the string in memory
+// Returns memory value from EEPROM beginning at position 'pos'
 int readValue(int pos) {
-  int output = EEPROM.read(pos + DATA_OFFSET);
-  return output;
+  return EEPROM.read(DATA_OFFSET + pos);
 }
 
 //===============================================================
@@ -103,30 +100,34 @@ void setup() {
   delay(1000);
   EEPROM.begin(4096);
 
-  int counter = 0;
-  state = 1024;
-  previousState = 1024;
+  // set initial state for global variables
+  counter = 0;
+  state = HIGH;
+  previousState = HIGH;
 
-  // write data every 60s
+  // set ticker to write data every 60s
   life_time_writer.attach(60,  updateWrite);
 
-  // Read data from flash memory (EEPROM library)
-  int output = readValue(0); //readString(adress);
-  Serial.print("Reading output: ");
-  Serial.println(output);
+  // Initialize stored lifetime value from flash memory (EEPROM library)
+  previous_lifetime_value = readValue(0);
+  Serial.println();
+  Serial.print("Reading previous lifetime value from memory: ");
+  Serial.println(previous_lifetime_value);
 
-  life_time_value = output;
-  previous_lifetime_value = output; // copy current value of lifetime_counter at startup
+  // copy current value of lifetime_counter at startup
+  // TODO: do we even need this?
+  life_time_value = previous_lifetime_value;
 
-  //ESP32 connects to your wifi ----------------------------------------------------------------------
-  WiFi.mode(WIFI_AP);           //Only Access point
-  WiFi.softAP(ssid, password);  //Start HOTspot removing password will disable security  WiFi.softAPConfig(myIP, myIP, IPAddress(255, 255, 255, 0));
+  // Start up a local WiFi access point
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP(ssid, password);
 
-  //If connection successful show IP address in serial monitor
-  IPAddress myIP = WiFi.softAPIP(); //Get IP address
-  Serial.print("HotSpt IP:");
+  // If startup successful show IP address in serial monitor
+  IPAddress myIP = WiFi.softAPIP();
+  Serial.print("HotSpot IP: ");
   Serial.println(myIP);
 
+  // Configure and start web server
   server.on("/", handleRoot);      //This is display page
   server.on("/readLifetime", handleLifetimeRequest);
   server.begin();                  //Start server
