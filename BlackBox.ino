@@ -71,6 +71,15 @@ void handleLifetimeRequest() {
   server.send(200, "text/plain", String(lifetimeRotations())); //Send ADC value only to client ajax request
 }
 
+void handleDataRequest() {
+  Serial.println("WEBSERVER: handling HTTP request for big data");
+  // build the JSON formatted string
+  char data[80]; // current max ~67; char data[80] is a String/array with 80 characters
+  sprintf(data, "{\"lifetime_rotations\": %d, \"session_rotations\": %d}", lifetimeRotations(), counter);//print to the String data with formatting
+  Serial.println(data); // for additional debugging temporary
+  server.send(200, "application/json", data); //Send web page
+}
+
 //===============================================================
 // eeprom functions
 //===============================================================
@@ -122,6 +131,7 @@ void setup() {
   // Configure and start web server
   server.on("/", handleRoot);      //This is display page
   server.on("/readLifetime", handleLifetimeRequest);
+  server.on("/bigData", handleDataRequest);  
   server.begin();                  //Start server
 }
 

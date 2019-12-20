@@ -271,22 +271,29 @@ const char MAIN_page[] PROGMEM = R"=====(
       setInterval(function () {
           console.log("getting data");
           // Call a function repetatively with 2 Second interval
-          updateLifetimeData();
+          updateData();
       }, 2000); //2000mSeconds update rate
-      
-      function updateLifetimeData() {
-         console.log("requesting lifetime data");
+
+      function updateData() {
+        console.log("requesting big data");
         var xhttp = new XMLHttpRequest();
           xhttp.onreadystatechange = function () {
-              console.log("got lifetime data response back");
+              console.log("got big data response back");
               if (this.readyState == 4 && this.status == 200) {
-                  var lifetime_rotation = this.responseText;
-                  var lifetime_dist = dist_calculator(lifetime_rotation);
-                  document.getElementById("life_time_rotations").innerHTML = lifetime_rotation;
+                  // parse JSON
+                  let data=JSON.parse(this.responseText);
+                  // print to console
+                  console.log(data.lifetime_rotations);
+                  console.log(data.session_rotations);
+                  //calculate and pass to client
+                  var lifetime_dist = dist_calculator(data.lifetime_rotations);
+                  var session_dist = dist_calculator(data.session_rotations);
+                  document.getElementById("life_time_rotations").innerHTML = data.lifetime_rotations;
+                  document.getElementById("section_dist").innerHTML = session_dist.toFixed(2);
                   document.getElementById("lifetime_dist").innerHTML = lifetime_dist.toFixed(2);
               }
           };
-        xhttp.open("GET", "readLifetime", true); // <-- change on server
+        xhttp.open("GET", "/bigData", true); // <-- change on server
         xhttp.send();
       }
       
