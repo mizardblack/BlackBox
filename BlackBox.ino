@@ -107,10 +107,9 @@ void setup() {
 
   // Initialize stored lifetime value from flash memory (EEPROM library)
   startupRotations = readValue(0);
-  Serial.println();
-  Serial.print("Reading previous lifetime value from memory: ");
-  Serial.println(startupRotations);
-
+  Serial.printf("\nReading previous lifetime value from memory: %d\n", startupRotations);
+  // ^^ homework: replaced with a single Serial.printf function
+  
   // Start up a local WiFi access point
   WiFi.mode(WIFI_AP);
   WiFi.softAP(ssid, password);
